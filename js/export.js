@@ -1,0 +1,143 @@
+/* Builds the summary PDF and the wallet card PDF from what is stored on the device. No DOM access. */
+(function () {
+  'use strict';
+  var HTH = window.HTH, t = HTH.t;
+
+  function has(s) { return !!(s && String(s).trim()); }
+  function join(parts, sep) { return parts.filter(has).join(sep); }
+  function names(ids, list) {
+    return (ids || []).map(function (id) {
+      var hit = (list || []).filter(function (x) { return x.id === id; })[0];
+      return hit ? hit.name : null;
+    }).filter(Boolean);
+  }
+
+  /* Plain-text view of the Passport, used by both PDFs. */
+  function passportText(P) {
+    var c = HTH.get('passport');
+    return {
+      diagnosis: join([names(P.lesions, c.lesions).join('; '), P.diagnosis], '\n'),
+      surgeries: P.surgeriesNone ? t('ui.pdf.none') : HTH.rows(P.surgeries, 'what').map(function (r) {
+        var extra = join([r.year, r.where], ', ');
+        return r.what + (extra ? ' (' + extra + ')' : '');
+      }).join('\n'),
+      medicines: P.medicinesNone ? t('ui.pdf.none') : HTH.rows(P.medicines, 'name').map(function (r) {
+        return join([join([r.name, r.dose], ' '), r.when, r.why], ', ');
+      }).join('\n'),
+      allergies: P.allergies || '',
+      devices: join([names(P.devices, c.devices).join('; '), P.deviceDetails], '\n'),
+      peds: join([P.pedsName, P.pedsClinic, P.pedsPhone], ', '),
+      achd: join([P.achdName, P.achdClinic, P.achdPhone], ', '),
+      emergency: HTH.rows(P.emergency, 'name').map(function (r) {
+        return join([r.name + (has(r.relation) ? ' (' + r.relation + ')' : ''), r.phone], ', ');
+      }).join('\n')
+    };
+  }
+
+  function latestCheckin(state) {
+    var list = state.checkins || [];
+    return list.length ? list[list.length - 1] : null;
+  }
+
+  /* opts: { passport: true|false, checkin: true|false } */
+  HTH.buildSummary = function (state, opts) {
+    var P = state.passport || {}, d = HTH.pdf.create(), blank = t('ui.pdf.blank');
+    function row(labelKey, value, o) { d.kv(t('ui.pdf.' + labelKey), has(value) ? value : blank, o); }
+
+    d.h1(t('ui.pdf.title'));
+    d.p(t('ui.pdf.completed', { date: HTH.fmtDate(new Date()) }), { color: d.GRAY, after: 8 });
+    row('name', P.name);
+    row('dob', HTH.fmtDate(P.dob));
+    d.gap(4);
+    d.note(t('ui.pdf.notice'));
+
+    if (opts.passport) {
+      var x = passportText(P);
+      d.h2(t('ui.pdf.passport'));
+      ['diagnosis', 'surgeries', 'medicines', 'allergies', 'devices', 'peds', 'achd', 'emergency']
+        .forEach(function (k) { row(k, x[k]); });
+    }
+
+    var rec = latestCheckin(state);
+    if (opts.checkin && rec) {
+      var c = HTH.instrument(rec.instrument), band = HTH.scoreBand(rec.total);
+      var sh = c.selfHarmItem, shAns = rec.answers[sh - 1], shLabel = c.options[shAns].label;
+      d.h2(t('ui.pdf.checkin'));
+      row('instrument', c.name);
+      row('date', HTH.fmtDate(rec.date));
+      row('total', t('ui.pdf.totalValue', { score: rec.total, max: c.maxScore }), { bold: true });
+      row('range', band.label);
+      row('flag', t(shAns > 0 ? 'ui.pdf.flagYes' : 'ui.pdf.flagNo', { n: sh, answer: shLabel }), { bold: shAns > 0 });
+      if (rec.difficulty != null) row('difficulty', c.difficulty.options[rec.difficulty]);
+      d.gap(4);
+      d.ensure(170); /* keep the answer list together on one page */
+      d.p(t('ui.pdf.answers'), { bold: true, after: 2 });
+      c.items.forEach(function (item, i) {
+        var a = rec.answers[i];
+        d.p((i + 1) + '. ' + item + ': ' + c.options[a].label + ' (' + a + ')', { size: 9, indent: 8, after: 1.5 });
+      });
+    }
+
+    d.h2(t('ui.pdf.questions'));
+    var qs = (state.questions || []).filter(has);
+    if (!qs.length) d.p(t('ui.pdf.noQuestions'), { color: d.GRAY });
+    qs.forEach(function (q, i) { d.p((i + 1) + '. ' + q, { indent: 8 }); });
+
+    return d.bytes(function (page, pages) {
+      return t('ui.pdf.footer', { v: HTH.meta.version, page: page, pages: pages });
+    });
+  };
+
+  /* A fold-in-half card the size of a bank card (3.375 x 2.125 inches per side). */
+  HTH.buildWalletCard = function (state) {
+    var P = state.passport || {}, x = passportText(P), d = HTH.pdf.create();
+    var fit = HTH.pdf.fit, wrap = HTH.pdf.wrap, blank = t('ui.pdf.blank');
+    var cw = 243, ch = 153, pad = 10, inner = cw - 2 * pad;
+
+    d.h1(t('ui.pdf.card.title'));
+    d.p(t('ui.pdf.card.cut'), { color: d.GRAY, after: 14 });
+    var top = d.getY(), left = d.M, bottom = top - ch;
+
+    d.rect(left, bottom, cw * 2, ch, { lineWidth: 0.8 });
+    d.line(left + cw, bottom, left + cw, top, { dash: true, color: [0.5, 0.5, 0.5] });
+
+    /* Draws label + up to maxLines of value; returns the next y. */
+    function block(px, yy, label, value, maxLines) {
+      d.textAt(px, yy, label.toUpperCase(), { size: 6, bold: true, color: d.GRAY });
+      yy -= 9;
+      var lines = wrap(has(value) ? String(value).replace(/\n/g, '; ') : blank, inner, 8);
+      if (lines.length > maxLines) {
+        lines = lines.slice(0, maxLines);
+        lines[maxLines - 1] = fit(lines[maxLines - 1] + ' ...', inner, 8);
+      }
+      lines.forEach(function (ln) { d.textAt(px, yy, ln, { size: 8 }); yy -= 9.5; });
+      return yy - 3;
+    }
+
+    /* Front */
+    var px = left + pad, yy = top - 16;
+    d.textAt(px, yy, t('ui.pdf.card.title'), { size: 9, bold: true, color: d.BRAND });
+    yy -= 15;
+    d.textAt(px, yy, fit(has(P.name) ? P.name : blank, inner, 11, true), { size: 11, bold: true });
+    yy -= 11;
+    d.textAt(px, yy, fit(t('ui.pdf.dob') + ': ' + (HTH.fmtDate(P.dob) || blank), inner, 8), { size: 8 });
+    yy -= 14;
+    yy = block(px, yy, t('ui.pdf.diagnosis'), x.diagnosis, 3);
+    yy = block(px, yy, t('ui.pdf.devices'), x.devices, 1);
+    block(px, yy, t('ui.pdf.allergies'), x.allergies, 2);
+
+    /* Back */
+    px = left + cw + pad; yy = top - 16;
+    wrap(t('ui.pdf.card.statement'), inner, 7.5, true).forEach(function (ln) {
+      d.textAt(px, yy, ln, { size: 7.5, bold: true, color: d.BRAND }); yy -= 9.5;
+    });
+    yy -= 5;
+    yy = block(px, yy, t('ui.pdf.card.meds'), x.medicines, 4);
+    yy = block(px, yy, t('ui.pdf.card.cardiologist'), has(x.achd) ? x.achd : x.peds, 2);
+    block(px, yy, t('ui.pdf.card.emergency'), x.emergency, 2);
+
+    return d.bytes(null);
+  };
+
+  HTH.latestCheckin = latestCheckin;
+})();
