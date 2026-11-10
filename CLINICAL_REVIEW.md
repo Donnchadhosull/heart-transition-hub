@@ -48,7 +48,65 @@ Each item below names the file to open. Tick it off when a named reviewer has si
   word. Check against phqscreeners.com. `content/en/checkin.js` → `instruments.phq9`
 - [ ] **How often to repeat.** The tool does not tell patients how often to check in. Decide
   on a cadence, or leave it open.
-- [ ] **GAD-7** is not built yet (brief asked for PHQ plus GAD-7).
+- [ ] **GAD-7 wording** was written from memory and must match the official form word for
+  word. Check against phqscreeners.com. `content/en/checkin.js` → `instruments.gad7`
+- [ ] **GAD-7 ranges** 0–4, 5–9, 10–14, 15–21 are from Spitzer et al. 2006 (adults). Crisis
+  resources are shown first at 15 or more. Confirm both for adolescents.
+
+## Am I Ready?
+
+- [ ] **Not a validated instrument.** The 17 items were written for this tool because the
+  licence terms of the TRAQ and of Got Transition's readiness assessment were not confirmed.
+  Decide whether to keep it, or get permission and replace it. `content/en/ready.js`
+- [ ] **Items and wording.** Check that the skills listed are the right ones and nothing
+  important is missing (for example knowing family history, or carrying emergency details).
+
+## Learning, Attention, and Memory
+
+- [ ] **Concerns list.** Nine plain statements written for this tool, not taken from any
+  questionnaire. A psychologist should review them. `content/en/learning.js`
+- [ ] **"Why this is common"** and the statement that experts recommend checks at different
+  ages, including the teen years. Check against the 2024 AHA statement's full text.
+- [ ] **Threshold.** Ticking any one item leads to "ask your team about an evaluation".
+  Decide whether that is too sensitive.
+- [ ] **IEP, 504 and ADA** descriptions.
+
+## My Team and The Transfer
+
+- [ ] **Roles, descriptions, questions and checklists.** `content/en/team.js`. Add or remove
+  roles to match how programs are staffed (for example genetic counselor, exercise
+  physiologist, child life).
+- [ ] **Transfer steps and their order.** `content/en/transfer.js`
+- [ ] **Statement that a general adult cardiologist "has usually not had this training".**
+- [ ] **Description of ACHA accreditation.**
+
+## Money, Insurance, and Adult Life (social work or financial counselor review)
+
+None of this was checked against the law or official guidance; it was written from general
+knowledge. It is United States only and rules vary by state. `content/en/money.js`
+
+- [ ] Staying on a parent's plan until 26, and when that coverage ends.
+- [ ] Children's Medicaid and CHIP ending "around age 19 in many states".
+- [ ] SSI review at 18 under adult rules, with parents' income no longer counted.
+- [ ] Losing coverage allowing sign-up outside the yearly period.
+- [ ] ADA covering "most employers with 15 or more workers", and not having to disclose.
+- [ ] School plans not carrying over to college.
+- [ ] Life insurance advice.
+- [ ] No Social Security link is given because ssa.gov could not be checked automatically.
+
+## Living With My Heart
+
+Written from general knowledge and kept general on purpose. `content/en/living.js`
+
+- [ ] **When to call the team and when to call 911.** The two symptom lists. This is the
+  highest-risk content in this section.
+- [ ] **Exercise:** "good for almost everyone", and the examples of limits.
+- [ ] **Endocarditis and dental care,** including "some people need an antibiotic".
+- [ ] **Tattoos and piercings.**
+- [ ] **Alcohol, vaping and drugs,** including energy drinks, cannabis and blood thinners.
+- [ ] **Birth control and pregnancy,** including blood-clot risk, medicines that can harm a
+  baby, and inheritance. Decide whether the 15–17 group should see this topic by default.
+- [ ] **Travel,** including altitude and long flights.
 
 ## Age pathways
 

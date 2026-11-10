@@ -8,11 +8,11 @@
        Do NOT translate the PHQ-9 yourself: use the official translation
        from phqscreeners.com.
     3. Add one line to the list below:
-         { code: "es", name: "Español", files: ["ui", "pathways", "passport", "checkin", "sources"] }
+         { code: "es", name: "Español", files: [ the same list of files as English ] }
   No other code changes are needed.
 */
 HTH.languages = [
-  { code: "en", name: "English", files: ["ui", "pathways", "passport", "checkin", "sources"] }
+  { code: "en", name: "English", files: ["ui", "pathways", "passport", "checkin", "ready", "learning", "money", "living", "team", "transfer", "sources"] }
 ];
 
 /*
@@ -20,6 +20,6 @@ HTH.languages = [
   lastClinicalReview: use "YYYY-MM-DD", or null while the content is still a draft.
 */
 HTH.meta = {
-  version: "0.1.0",
+  version: "0.2.0",
   lastClinicalReview: null
 };

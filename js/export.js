@@ -34,11 +34,6 @@
     };
   }
 
-  function latestCheckin(state) {
-    var list = state.checkins || [];
-    return list.length ? list[list.length - 1] : null;
-  }
-
   /* opts: { passport: true|false, checkin: true|false } */
   HTH.buildSummary = function (state, opts) {
     var P = state.passport || {}, d = HTH.pdf.create(), blank = t('ui.pdf.blank');
@@ -58,16 +53,19 @@
         .forEach(function (k) { row(k, x[k]); });
     }
 
-    var rec = latestCheckin(state);
-    if (opts.checkin && rec) {
-      var c = HTH.instrument(rec.instrument), band = HTH.scoreBand(rec.total);
-      var sh = c.selfHarmItem, shAns = rec.answers[sh - 1], shLabel = c.options[shAns].label;
-      d.h2(t('ui.pdf.checkin'));
+    ['mood', 'worry'].forEach(function (kind) {
+      var rec = HTH.latestCheckin(state, kind);
+      if (!opts.checkin || !rec) return;
+      var c = HTH.instrument(rec.instrument), band = HTH.scoreBand(rec.total, rec.instrument), sh = c.selfHarmItem;
+      d.h2(c.title + ' (' + t('ui.pdf.screener') + ')');
       row('instrument', c.name);
       row('date', HTH.fmtDate(rec.date));
       row('total', t('ui.pdf.totalValue', { score: rec.total, max: c.maxScore }), { bold: true });
       row('range', band.label);
-      row('flag', t(shAns > 0 ? 'ui.pdf.flagYes' : 'ui.pdf.flagNo', { n: sh, answer: shLabel }), { bold: shAns > 0 });
+      if (sh) {
+        var shAns = rec.answers[sh - 1];
+        row('flag', t(shAns > 0 ? 'ui.pdf.flagYes' : 'ui.pdf.flagNo', { n: sh, answer: c.options[shAns].label }), { bold: shAns > 0 });
+      }
       if (rec.difficulty != null) row('difficulty', c.difficulty.options[rec.difficulty]);
       d.gap(4);
       d.ensure(170); /* keep the answer list together on one page */
@@ -76,6 +74,40 @@
         var a = rec.answers[i];
         d.p((i + 1) + '. ' + item + ': ' + c.options[a].label + ' (' + a + ')', { size: 9, indent: 8, after: 1.5 });
       });
+    });
+
+    var ready = (state.ready || [])[(state.ready || []).length - 1];
+    if (opts.ready && ready) {
+      var n = HTH.readyCounts(ready);
+      d.h2(t('ui.pdf.ready'));
+      row('date', HTH.fmtDate(ready.date));
+      row('readyResult', t('ui.pdf.readySummary', { yes: n.yes, learning: n.learning, notYet: n.notYet.length, total: n.total }));
+      if (n.notYet.length) row('readyNotYet', n.notYet.map(function (it) { return it.text; }).join('\n'));
+    }
+
+    var L = state.learning;
+    if (opts.learning && L) {
+      var ticked = (HTH.get('learning.items') || []).filter(function (it) { return L.picked.indexOf(it.id) >= 0; });
+      d.h2(t('ui.pdf.learning'));
+      row('date', HTH.fmtDate(L.date));
+      if (ticked.length) {
+        row('concerns', ticked.map(function (it) { return it.text; }).join('\n'));
+        d.p(t('ui.pdf.learningAsk', { n: ticked.length }), { bold: true });
+      } else {
+        d.p(t('ui.pdf.learningNone'));
+      }
+    }
+
+    if (opts.progress) {
+      var X = state.transfer || {}, xDone = X.done || {}, steps = HTH.get('transfer.steps') || [];
+      var teamDone = (state.team && state.team.done) || {};
+      d.h2(t('ui.pdf.progress'));
+      row('transferSteps', t('ui.pdf.stepsDone', { done: HTH.doneCount(steps, xDone), total: steps.length }) + '\n' +
+        steps.map(function (s) { return (xDone[s.id] ? '[x] ' : '[  ] ') + s.title; }).join('\n'));
+      if (X.date) row('firstVisit', HTH.fmtDate(X.date));
+      row('teamChecklists', HTH.teamRoles(state).map(function (r) {
+        return r.name + ': ' + t('ui.pdf.stepsDone', { done: HTH.doneCount(r.checklist, teamDone), total: r.checklist.length });
+      }).join('\n'));
     }
 
     d.h2(t('ui.pdf.questions'));
@@ -139,5 +171,4 @@
     return d.bytes(null);
   };
 
-  HTH.latestCheckin = latestCheckin;
 })();

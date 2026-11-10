@@ -64,20 +64,53 @@
   };
 
   /* Severity band for a screener total, read from the content file. */
-  HTH.scoreBand = function (total) {
-    var bands = HTH.get('checkin.bands') || [], hit = bands[0];
+  HTH.scoreBand = function (total, instrumentId) {
+    var tool = instrumentId ? HTH.instrument(instrumentId) : null;
+    var bands = (tool && tool.bands) || HTH.get('checkin.bands') || [], hit = bands[0];
     bands.forEach(function (b) { if (total >= b.min) hit = b; });
     return hit;
   };
 
   /* Which screener a patient gets (by age), and lookup of a screener by id. */
-  HTH.instrumentFor = function (state) {
+  HTH.instrumentFor = function (state, kind) {
+    if (kind === 'worry') return 'gad7';
     var age = HTH.ageNow(state), cut = HTH.get('checkin.adolescentUnder') || 18;
     return age != null && age < cut ? 'phqa' : 'phq9';
   };
   HTH.instrument = function (id) {
     var all = HTH.get('checkin.instruments') || {};
     return all[id] || all.phq9;
+  };
+
+  /* Latest check-in record, optionally of one kind ('mood' or 'worry'). */
+  HTH.latestCheckin = function (state, kind) {
+    var list = state.checkins || [];
+    for (var i = list.length - 1; i >= 0; i--) {
+      if (!kind || HTH.instrument(list[i].instrument).kind === kind) return list[i];
+    }
+    return null;
+  };
+
+  /* Am I Ready?: counts for one saved set of answers (2 = yes, 1 = learning, anything else = not yet). */
+  HTH.readyCounts = function (rec) {
+    var out = { yes: 0, learning: 0, notYet: [], total: 0 }, answers = (rec && rec.answers) || {};
+    (HTH.get('ready.groups') || []).forEach(function (g) {
+      g.items.forEach(function (it) {
+        out.total++;
+        if (answers[it.id] === 2) out.yes++;
+        else if (answers[it.id] === 1) out.learning++;
+        else out.notYet.push(it);
+      });
+    });
+    return out;
+  };
+  /* Team roles the patient has not hidden. */
+  HTH.teamRoles = function (state) {
+    var hidden = (state.team && state.team.hidden) || {};
+    return (HTH.get('team.roles') || []).filter(function (r) { return !hidden[r.id]; });
+  };
+  HTH.doneCount = function (items, doneMap) {
+    return (items || []).filter(function (it) { return doneMap && doneMap[it.id]; }).length;
   };
 
   HTH.PARTS = ['about', 'heart', 'surgeries', 'medicines', 'allergies', 'devices', 'team', 'emergency'];

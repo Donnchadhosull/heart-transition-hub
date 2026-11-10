@@ -1,9 +1,10 @@
 /*
   CHECK-IN ON HOW I'M DOING  (clinical content: NEEDS CLINICAL REVIEW, see CLINICAL_REVIEW.md)
 
-  Two instruments. The tool picks one by the patient's age:
-    younger than "adolescentUnder"  ->  PHQ-A (PHQ-9 modified for Adolescents)
-    that age or older               ->  PHQ-9
+  Two check-ins, each offered separately:
+    Mood   younger than "adolescentUnder"  ->  PHQ-A (PHQ-9 modified for Adolescents)
+           that age or older               ->  PHQ-9
+    Worry  all ages                        ->  GAD-7
 
   IMPORTANT: the "stem", "items", "options" and "difficulty" wording inside each instrument
   is the validated form. Do NOT reword it, even to make it easier to read.
@@ -25,6 +26,9 @@ HTH.content.en.checkin = {
     */
     phq9: {
       id: "phq9",
+      kind: "mood",
+      title: "Mood check-in",
+      about: "9 short questions about the last 2 weeks. It takes about 3 minutes.",
       short: "PHQ-9",
       name: "PHQ-9 (Patient Health Questionnaire-9)",
       maxScore: 27,
@@ -67,6 +71,9 @@ HTH.content.en.checkin = {
     */
     phqa: {
       id: "phqa",
+      kind: "mood",
+      title: "Mood check-in",
+      about: "9 short questions about the last 2 weeks. It takes about 3 minutes.",
       short: "PHQ-A",
       name: "PHQ-A (PHQ-9 modified for Adolescents)",
       maxScore: 27,
@@ -94,11 +101,57 @@ HTH.content.en.checkin = {
         question: "If you are experiencing any of the problems on this form, how difficult have these problems made it for you to do your work, take care of things at home or get along with other people?",
         options: ["Not difficult at all", "Somewhat difficult", "Very difficult", "Extremely difficult"]
       }
+    },
+
+    /*
+      GAD-7 (Generalized Anxiety Disorder 7-item scale), used for all ages.
+      Spitzer RL, Kroenke K, Williams JBW, Lowe B. Arch Intern Med. 2006;166(10):1092-1097.
+      Same family and same terms as the PHQ-9: no permission required to reproduce,
+      translate, display or distribute. Source: phqscreeners.com
+      It has no self-harm question, so "selfHarmItem" is null.
+      Score ranges (5 / 10 / 15) are from the 2006 paper.
+    */
+    gad7: {
+      id: "gad7",
+      kind: "worry",
+      title: "Worry check-in",
+      about: "7 short questions about the last 2 weeks. It takes about 2 minutes.",
+      short: "GAD-7",
+      name: "GAD-7 (Generalized Anxiety Disorder 7-item scale)",
+      maxScore: 21,
+      selfHarmItem: null,
+      severeMin: 15,
+      stem: "Over the last 2 weeks, how often have you been bothered by the following problems?",
+      options: [
+        { value: 0, label: "Not at all" },
+        { value: 1, label: "Several days" },
+        { value: 2, label: "More than half the days" },
+        { value: 3, label: "Nearly every day" }
+      ],
+      items: [
+        "Feeling nervous, anxious, or on edge",
+        "Not being able to stop or control worrying",
+        "Worrying too much about different things",
+        "Trouble relaxing",
+        "Being so restless that it's hard to sit still",
+        "Becoming easily annoyed or irritable",
+        "Feeling afraid as if something awful might happen"
+      ],
+      difficulty: {
+        question: "If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?",
+        options: ["Not difficult at all", "Somewhat difficult", "Very difficult", "Extremely difficult"]
+      },
+      bands: [
+        { min: 0, label: "Minimal", text: "Your answers suggest little or no worry or anxiety right now. If that does not match how you feel, trust yourself and talk to your team anyway." },
+        { min: 5, label: "Mild", text: "Your answers suggest some worry or anxiety. This is common when you live with a heart condition, and it is worth bringing up at your next visit." },
+        { min: 10, label: "Moderate", text: "Your answers suggest worry or anxiety that is getting in the way. Please share this with your heart team or your regular doctor soon. They can help." },
+        { min: 15, label: "Severe", text: "Your answers suggest worry or anxiety that is affecting your life a lot. Please contact your heart team or your regular doctor this week. You do not have to wait for your next visit." }
+      ]
     }
   },
 
   /*
-    Score ranges, used for both instruments.
+    Score ranges for the two mood check-ins (PHQ-9 and PHQ-A).
     PHQ-9: Kroenke, Spitzer & Williams, J Gen Intern Med 2001;16:606-613.
     PHQ-A: the same cut-points are printed on the American Psychiatric Association's
     DSM-5-TR adaptation of the PHQ-A (which calls the lowest range "None").
@@ -114,13 +167,15 @@ HTH.content.en.checkin = {
   /* Text around the questionnaire (this part can be reworded). */
   intro: {
     title: "Check-in on how I'm doing",
-    lead: "Living with a heart condition can be hard on your mood, not just your body. That is common, and help works.",
-    what: "This check-in has 9 short questions about the last 2 weeks. It takes about 3 minutes.",
+    lead: "Living with a heart condition can be hard on your mood and can bring a lot of worry. That is common, and help works.",
+    what: "There are two short check-ins here: one about mood and one about worry. You can do one or both.",
     notDiagnosis: "This is not a test and not a diagnosis. It is a way to notice how you are doing and to share it with your team if you choose to.",
     notWatched: "No one sees your answers unless you show them. No one is watching this tool, so it cannot send help.",
     caregiver: "This check-in is for the young person to answer for themselves, in private if they want.",
-    start: "Start the check-in",
-    again: "Do the check-in again",
+    start: "Start",
+    again: "Do it again",
+    never: "Not done yet",
+    last: "Last done {date}: {score} out of {max} ({label})",
     history: "My past check-ins",
     historyRow: "{date}: {score} out of {max} ({label}) · {tool}"
   },

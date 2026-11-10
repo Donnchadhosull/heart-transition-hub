@@ -4,12 +4,13 @@
   what a patient types, and it never contacts any other site.
   Change CACHE when you publish a new version so old files are cleared.
 */
-var CACHE = 'hth-0.1.0';
+var CACHE = 'hth-0.2.0';
 var CORE = [
   './', 'index.html', 'css/styles.css',
   'js/core.js', 'js/pdf.js', 'js/export.js', 'js/app.js',
   'content/languages.js',
-  'content/en/ui.js', 'content/en/pathways.js', 'content/en/passport.js', 'content/en/checkin.js', 'content/en/sources.js'
+  'content/en/ui.js', 'content/en/pathways.js', 'content/en/passport.js', 'content/en/checkin.js', 'content/en/sources.js',
+  'content/en/ready.js', 'content/en/learning.js', 'content/en/money.js', 'content/en/living.js', 'content/en/team.js', 'content/en/transfer.js'
 ];
 
 self.addEventListener('install', function (e) {

@@ -45,6 +45,7 @@ updated.
 | Kroenke K, Spitzer RL, Williams JBW. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001;16(9):606-613. Source of the 5/10/15/20 cut-points. | [doi:10.1046/j.1525-1497.2001.016009606.x](https://doi.org/10.1046/j.1525-1497.2001.016009606.x) |
 | PHQ-A (PHQ-9 modified for Adolescents). The item wording in this tool was copied from this page. | [NIMH ASQ Toolkit](https://www.nimh.nih.gov/research/research-conducted-at-nimh/asq-toolkit-materials/asq-tool/phq-9-modified-for-adolescents-phq-a) |
 | Johnson JG, Harris ES, Spitzer RL, Williams JBW. The Patient Health Questionnaire for Adolescents: validation of an instrument for the assessment of mental disorders among adolescent primary care patients. J Adolesc Health. 2002;30(3):196-204. | [doi:10.1016/s1054-139x(01)00333-0](https://doi.org/10.1016/s1054-139x(01)00333-0) |
+| GAD-7. Spitzer RL, Kroenke K, Williams JBW, Löwe B. A Brief Measure for Assessing Generalized Anxiety Disorder. Arch Intern Med. 2006;166(10):1092-1097. Source of the 5/10/15 cut-points. Distributed with the PHQ family on phqscreeners.com. | [doi:10.1001/archinte.166.10.1092](https://doi.org/10.1001/archinte.166.10.1092) |
 | American Psychiatric Association. Severity Measure for Depression, Child Age 11–17 (adapted from the PHQ-A). Reported to state that the PHQ-A is in the public domain and to print the 0–4 / 5–9 / 10–14 / 15–19 / 20–27 ranges. | [APA assessment measures](https://www.psychiatry.org/psychiatrists/practice/dsm/educational-resources/assessment-measures). **The PDF could not be opened, so this rests on a search summary. Not confirmed.** |
 
 ## Crisis resources
@@ -54,8 +55,25 @@ updated.
 | 988 Suicide & Crisis Lifeline (call or text 988) | [988lifeline.org](https://988lifeline.org/) |
 | Crisis Text Line (text HOME to 741741) | [crisistextline.org](https://www.crisistextline.org/) |
 
+## Links given to patients in Money, Insurance, and Adult Life
+
+These are places to read more. The text of that section was **not** checked against them.
+
+| Source | Link |
+|---|---|
+| HealthCare.gov. Coverage for young adults under 26. | [link](https://www.healthcare.gov/young-adults/children-under-26/) |
+| HealthCare.gov. Glossary. | [link](https://www.healthcare.gov/glossary/) |
+| HealthCare.gov. Special enrollment period. | [link](https://www.healthcare.gov/coverage-outside-open-enrollment/special-enrollment-period/) |
+| HealthCare.gov. Getting Medicaid and CHIP. | [link](https://www.healthcare.gov/medicaid-chip/getting-medicaid-chip/) |
+| Job Accommodation Network. | [askjan.org](https://askjan.org/) |
+| ADA.gov. | [ada.gov](https://www.ada.gov/) |
+| 211. | [211.org](https://www.211.org/) |
+
 ## Not yet sourced
 
-Needed for the sections that are not built: a transition readiness instrument and its licence
-(TRAQ or the Got Transition readiness assessment), GAD-7, ACC transition resources, and
-US insurance rules (dependent coverage to 26, Medicaid and SSI at 18).
+- **Am I Ready?** uses items written for this tool. A validated readiness instrument (TRAQ,
+  or Got Transition's readiness assessment) needs its licence confirmed before it can be used.
+- **Living With My Heart** has no source links. It was written from general knowledge and
+  needs checking against the 2025 ACHD guideline.
+- **Social Security (SSI at 18):** ssa.gov refused automated requests, so no link was added.
+- ACC transition resources were not located.
