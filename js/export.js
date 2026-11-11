@@ -170,5 +170,71 @@
 
     return d.bytes(null);
   };
+  /* ---------- plain-text versions, used only when the patient chooses to email ----------
+     Kept short on purpose: email apps cut off long pre-written messages. */
+  HTH.learningText = function (state) {
+    var L = state.learning, c = HTH.get('learning'), P = state.passport || {}, lines = [c.checkHeading];
+    if (!L) return lines.join('\r\n');
+    var ticked = c.items.filter(function (it) { return L.picked.indexOf(it.id) >= 0; });
+    lines.push(t('ui.pdf.date') + ': ' + HTH.fmtDate(L.date));
+    if (has(P.name)) lines.push(t('ui.pdf.name') + ': ' + P.name);
+    if (has(P.dob)) lines.push(t('ui.pdf.dob') + ': ' + HTH.fmtDate(P.dob));
+    lines.push('');
+    if (ticked.length) {
+      lines.push(t('ui.pdf.concerns') + ':');
+      ticked.forEach(function (it) { lines.push('- ' + it.text); });
+      lines.push('', t('ui.pdf.learningAsk', { n: ticked.length }));
+    } else {
+      lines.push(t('ui.pdf.learningNone'));
+    }
+    lines.push('', t('ui.pdf.notice'));
+    return lines.join('\r\n');
+  };
 
+  HTH.summaryText = function (state, opts) {
+    var P = state.passport || {}, lines = [t('ui.pdf.title'), t('ui.pdf.completed', { date: HTH.fmtDate(new Date()) })];
+    function kv(key, value) { if (has(value)) lines.push(t('ui.pdf.' + key) + ': ' + String(value).replace(/\n/g, '; ')); }
+    kv('name', P.name); kv('dob', HTH.fmtDate(P.dob));
+
+    if (opts.passport) {
+      var x = passportText(P);
+      lines.push('', t('ui.pdf.passport').toUpperCase());
+      ['diagnosis', 'surgeries', 'medicines', 'allergies', 'devices', 'peds', 'achd', 'emergency'].forEach(function (k) { kv(k, x[k]); });
+    }
+    if (opts.checkin) {
+      ['mood', 'worry'].forEach(function (kind) {
+        var rec = HTH.latestCheckin(state, kind);
+        if (!rec) return;
+        var c = HTH.instrument(rec.instrument), sh = c.selfHarmItem;
+        lines.push('', (c.title + ' (' + c.short + ')').toUpperCase());
+        lines.push(HTH.fmtDate(rec.date) + ': ' + t('ui.pdf.totalValue', { score: rec.total, max: c.maxScore }) + ', ' + HTH.scoreBand(rec.total, rec.instrument).label);
+        if (sh && rec.answers[sh - 1] > 0) lines.push(t('ui.pdf.flagYes', { n: sh, answer: c.options[rec.answers[sh - 1]].label }));
+      });
+    }
+    var ready = (state.ready || [])[(state.ready || []).length - 1];
+    if (opts.ready && ready) {
+      var n = HTH.readyCounts(ready);
+      lines.push('', t('ui.pdf.ready').toUpperCase());
+      lines.push(t('ui.pdf.readySummary', { yes: n.yes, learning: n.learning, notYet: n.notYet.length, total: n.total }));
+    }
+    var L = state.learning;
+    if (opts.learning && L) {
+      var ticked = (HTH.get('learning.items') || []).filter(function (it) { return L.picked.indexOf(it.id) >= 0; });
+      lines.push('', t('ui.pdf.learning').toUpperCase());
+      if (ticked.length) ticked.forEach(function (it) { lines.push('- ' + it.text); });
+      else lines.push(t('ui.pdf.learningNone'));
+    }
+    if (opts.progress) {
+      var X = state.transfer || {}, steps = HTH.get('transfer.steps') || [];
+      lines.push('', t('ui.pdf.transferSteps') + ': ' + t('ui.pdf.stepsDone', { done: HTH.doneCount(steps, X.done || {}), total: steps.length }));
+      if (X.date) kv('firstVisit', HTH.fmtDate(X.date));
+    }
+    var qs = (state.questions || []).filter(has);
+    if (qs.length) {
+      lines.push('', t('ui.pdf.questions').toUpperCase());
+      qs.forEach(function (q, i) { lines.push((i + 1) + '. ' + q); });
+    }
+    lines.push('', t('ui.pdf.notice'));
+    return lines.join('\r\n');
+  };
 })();

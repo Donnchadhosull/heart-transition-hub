@@ -44,6 +44,20 @@ HTH.content.en.passport = {
     achdPhone: { label: "Adult clinic phone" },
     emergency: { label: "Emergency contacts", item: "Contact {n}", cols: { name: "Name", relation: "Who they are to me", phone: "Phone" } }
   },
+  /* The "Heart conditions explained" information page uses the lesions list below. */
+  conditions: {
+    title: "Heart conditions explained",
+    lead: "Short explanations of common congenital heart conditions. Choose yours to read more.",
+    note: "These are general descriptions. Your own heart may be different, and many people have more than one condition. Ask your heart doctor to write down the name of yours.",
+    askTitle: "Questions to ask about my condition",
+    ask: [
+      "What is the name of my heart condition, and can you write it down for me?",
+      "What surgeries or procedures have I had, and what did they do?",
+      "What should I watch for as I get older?",
+      "How often do I need a heart check-up?"
+    ],
+    passport: "Save my condition in my Heart Passport"
+  },
   lesions: [
     { id: "asd", name: "Atrial septal defect (ASD)", explain: "A hole in the wall between the two top chambers of the heart. Some close on their own. Others are closed with a small device or with surgery." },
     { id: "vsd", name: "Ventricular septal defect (VSD)", explain: "A hole in the wall between the two bottom chambers of the heart. Small ones may close on their own. Larger ones are closed with surgery." },

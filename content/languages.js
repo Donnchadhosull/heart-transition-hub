@@ -12,7 +12,7 @@
   No other code changes are needed.
 */
 HTH.languages = [
-  { code: "en", name: "English", files: ["ui", "pathways", "passport", "checkin", "ready", "learning", "money", "living", "team", "transfer", "sources"] }
+  { code: "en", name: "English", files: ["ui", "pathways", "passport", "checkin", "ready", "learning", "money", "living", "wellbeing", "team", "transfer", "pro", "sources"] }
 ];
 
 /*
@@ -20,6 +20,6 @@ HTH.languages = [
   lastClinicalReview: use "YYYY-MM-DD", or null while the content is still a draft.
 */
 HTH.meta = {
-  version: "0.2.0",
+  version: "0.3.0",
   lastClinicalReview: null
 };

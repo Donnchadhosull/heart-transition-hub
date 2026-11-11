@@ -8,6 +8,7 @@ HTH.content.en.transfer = {
   title: "The Transfer",
   lead: "\"Transfer\" is the actual move from your children's heart clinic to an adult one. The risk is falling through the gap in between. These steps keep that from happening.",
   stepsTitle: "My steps",
+  stepsHint: "Optional. Tick these off as you go. They save on this device.",
   status: "{done} of {total} steps done",
   steps: [
     { id: "t1", title: "We have talked about moving to adult care", text: "My pediatric team and I have talked about when and why I will move." },

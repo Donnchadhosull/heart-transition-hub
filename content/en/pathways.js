@@ -4,6 +4,22 @@
   Each "focus" item needs a unique id. Do not reuse or change ids once patients are using the tool.
 */
 HTH.content.en.pathways = {
+  title: "Understanding transition",
+  lead: "Moving to adult heart care is not one day. It is a few years of getting ready, followed by the move itself.",
+  whatTitle: "What is transition?",
+  what: [
+    "Transition is the time when you learn to look after your own heart care. It usually starts around age 12 and builds up through your teens. Bit by bit, you take over the things your parents and your team have been doing for you.",
+    "Most people born with a heart condition need heart check-ups for life, even after a good repair and even when they feel well. The goal of transition is that you arrive in adult care knowing your heart, and that there is no gap in your care."
+  ],
+  vsTitle: "Transition and transfer are different",
+  vs: [
+    "Transition is the getting ready. It takes years.",
+    "Transfer is the actual move from your children's heart clinic to an adult congenital heart (ACHD) clinic. It usually happens between 18 and 21."
+  ],
+  stagesTitle: "What to expect at each age",
+  stagesNote: "The ages are a guide. Everyone moves at their own pace.",
+  focusTitle: "Goals at this stage",
+  caregiverTitle: "For parents and caregivers",
   young: "You are a bit younger than most people who use this tool. That is OK. It works best if you go through it with a grown-up you trust.",
   bands: {
     a: {

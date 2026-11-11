@@ -166,12 +166,16 @@ HTH.content.en.checkin = {
 
   /* Text around the questionnaire (this part can be reworded). */
   intro: {
-    title: "Check-in on how I'm doing",
+    title: "Mood and worry check-ins",
     lead: "Living with a heart condition can be hard on your mood and can bring a lot of worry. That is common, and help works.",
     what: "There are two short check-ins here: one about mood and one about worry. You can do one or both.",
     notDiagnosis: "This is not a test and not a diagnosis. It is a way to notice how you are doing and to share it with your team if you choose to.",
     notWatched: "No one sees your answers unless you show them. No one is watching this tool, so it cannot send help.",
-    caregiver: "This check-in is for the young person to answer for themselves, in private if they want.",
+    caregiver: "These are for the young person to answer for themselves, in private if they want.",
+    ageQ: "How old are you?",
+    ageHint: "There is a version of the mood check-in for people under 18.",
+    ageUnder: "I am under 18",
+    ageOver: "I am 18 or older",
     start: "Start",
     again: "Do it again",
     never: "Not done yet",

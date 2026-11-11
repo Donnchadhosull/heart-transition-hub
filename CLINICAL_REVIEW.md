@@ -148,3 +148,41 @@ Written from general knowledge and kept general on purpose. `content/en/living.j
 - [ ] Accessibility was built to WCAG 2.1 AA patterns but has not been audited or tested
   with a screen reader.
 - [ ] "Call 911" in the footer and US crisis lines make this version US-only.
+
+## Added in version 0.3.0 (website redesign)
+
+### For the care team (`content/en/pro.js`)
+
+All of this was written from general knowledge, in our own words. None of it was checked
+against the full text of the guideline or statements.
+
+- [ ] **Each role page:** the description of the role, "What to do", and "What to cover
+  with the patient". Seven roles. Each should be read by someone in that role.
+- [ ] **Claims stated as fact,** in particular: that patients are most often lost between
+  the last pediatric and first adult visit; that insurance loss is among the most common
+  reasons for dropping out of care; that anxiety, depression and neurodevelopmental
+  differences are more common in CHD; and what the current ACHD guideline asks adult
+  programs to address.
+- [ ] **Six core elements** summary and the **timeline by age.** Check against Got
+  Transition's current version.
+- [ ] **Transfer summary checklist.** Twelve items. Add or remove to match local practice.
+- [ ] **"Reading a patient's summary".** Confirm it describes the tools accurately.
+
+### New patient text
+
+- [ ] **Understanding transition** introduction, including "usually starts around age 12"
+  and transfer "usually between 18 and 21". `content/en/pathways.js`
+- [ ] **Mood and wellbeing** page. `content/en/wellbeing.js`
+- [ ] **Questions to ask about my condition.** `content/en/passport.js` → `conditions`
+
+### Decisions to confirm
+
+- [ ] **Email.** Patients can now email a text version of their summary, or of the learning
+  and attention self-check, from their own email app. A summary can include a flagged
+  self-harm answer. The site warns that email is less private than the portal. Confirm
+  this is acceptable to your institution, especially for patients under 18.
+- [ ] **No opening questions.** The site no longer asks who the visitor is or their age.
+  The mood check-in asks "under 18 or 18 and over" only when it is started, to choose
+  between the PHQ-A and the PHQ-9.
+- [ ] **Flyer wording.** `flyer.html` describes the site as "clear, trusted information".
+  Do not hand out the flyer until the content has been reviewed.

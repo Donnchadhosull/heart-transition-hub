@@ -16,6 +16,15 @@ HTH.content.en.learning = {
     "This has nothing to do with how smart you are or how hard you try. Many people only notice it when school or work gets more demanding.",
     "Heart experts recommend that people at higher risk get checked at different ages, including the teen years."
   ],
+  checkTitle: "Optional: a quick self-check",
+  checkLead: "Nine short statements. Tick the ones that are true for you, and you will see whether it is worth asking your team about an evaluation. This is not a test. You can email the list to yourself or your team if you choose.",
+  checkStart: "Start the self-check",
+  checkAgain: "See my self-check",
+  checkHeading: "Learning and attention self-check",
+  backInfo: "Back to the information page",
+  email: "Email this list",
+  emailSubject: "My learning and attention self-check",
+  emailNote: "This opens your own email app with the list written in the message. You choose who to send it to. Regular email is less private than your patient portal.",
   question: "Tick any that are true for you",
   hint: "Think about the last few months.",
   items: [
