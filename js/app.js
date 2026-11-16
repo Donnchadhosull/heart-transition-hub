@@ -1,8 +1,8 @@
 /* Pages, navigation and optional tools. All wording comes from the files in /content. */
 (function () {
   'use strict';
-  var HTH = window.HTH, t = HTH.t, KEY = 'hth.v1';
-  var state, memoryOnly = false;
+  var HTH = window.HTH, t = HTH.t, LEGACY_KEY = 'hth.v1', SAVED_KEY = 'hth.saved.v2';
+  var state, keepOnDevice = false, hasLegacy = false, storageError = false;
 
   /* ---------- storage (this device only) ---------- */
   function blank() {
@@ -13,23 +13,78 @@
   }
   function load() {
     try {
-      localStorage.setItem(KEY + '.test', '1');
-      localStorage.removeItem(KEY + '.test');
-      var s = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (s && s.v === 1) return Object.assign(blank(), s);
-    } catch (e) { memoryOnly = true; }
+      hasLegacy = localStorage.getItem(LEGACY_KEY) !== null;
+      var s = JSON.parse(localStorage.getItem(SAVED_KEY) || 'null');
+      if (s && s.v === 1) {
+        keepOnDevice = true;
+        return Object.assign(blank(), s);
+      }
+    } catch (e) { storageError = true; }
     return blank();
   }
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { memoryOnly = true; }
+    if (!keepOnDevice) return;
+    try {
+      if (localStorage.getItem(SAVED_KEY) === null) {
+        keepOnDevice = false; // Saving may have been turned off in another tab.
+        return;
+      }
+      localStorage.setItem(SAVED_KEY, JSON.stringify(state));
+    } catch (e) { storageError = true; }
+  }
+  function keepState(savedState) {
+    try {
+      localStorage.setItem(SAVED_KEY, JSON.stringify(savedState));
+      keepOnDevice = true;
+      storageError = false;
+      return true;
+    } catch (e) {
+      storageError = true;
+      return false;
+    }
+  }
+  function removeStoredState() {
+    keepOnDevice = false;
+    try {
+      localStorage.removeItem(SAVED_KEY);
+      localStorage.removeItem(LEGACY_KEY);
+      hasLegacy = false;
+      storageError = false;
+    } catch (e) { storageError = true; }
+  }
+  function restoreLegacy() {
+    if (!window.confirm(t('ui.storage.restoreConfirm'))) return;
+    try {
+      var older = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null');
+      if (older && older.v === 1) {
+        var restored = Object.assign(blank(), older);
+        if (keepState(restored)) {
+          state = restored;
+          ci = null; rd = null; ln = null;
+          localStorage.removeItem(LEGACY_KEY);
+        }
+      }
+      hasLegacy = localStorage.getItem(LEGACY_KEY) !== null;
+    } catch (e) { storageError = true; }
+    loadLang(state.lang || HTH.lang).then(function () { render(); });
   }
   function eraseAll() {
     if (!window.confirm(t('ui.erase.confirm'))) return;
-    try { localStorage.removeItem(KEY); } catch (e) { /* nothing stored */ }
+    removeStoredState();
     var lang = state.lang;
     state = blank(); state.lang = lang;
     ci = null; rd = null; ln = null;
     go('');
+  }
+  function storageSettings() {
+    var s = 'ui.storage.';
+    return h('div', {},
+      p(t(s + (keepOnDevice ? 'saving' : 'temporary')), 'hint'),
+      btn(t(s + (keepOnDevice ? 'stop' : 'start')), function () {
+        if (keepOnDevice) removeStoredState(); else keepState(state);
+        render();
+      }, 'secondary small'),
+      hasLegacy ? btn(t(s + 'restore'), restoreLegacy, 'secondary small') : null);
   }
 
   /* ---------- tiny DOM helpers ---------- */
@@ -225,7 +280,8 @@
     var u = 'ui.tools.';
     return widePage(t(u + 'title'), p(t(u + 'lead'), 'lead'), toolGrid(),
       h('div', { class: 'narrow' },
-        card(h('h2', {}, t(u + 'privacyTitle')), bullets(HTH.get('ui.tools.privacy')), btn(t('ui.footer.erase'), eraseAll, 'danger small'))));
+        card(h('h2', {}, t(u + 'privacyTitle')), bullets(HTH.get('ui.tools.privacy')), storageSettings(),
+          btn(t('ui.footer.erase'), eraseAll, 'danger small'))));
   }
 
   /* ---------- Understanding transition ---------- */
@@ -373,7 +429,8 @@
       p(t('passport.partOf', { n: idx + 1, total: HTH.PARTS.length }), 'eyebrow'),
       p(c.parts[id].intro, 'lead'),
       FORMS[id].map(function (def) { return field(def, P); }),
-      p(t('ui.common.saved'), 'hint'),
+      p(t('ui.storage.' + (keepOnDevice ? 'saving' : 'temporary')), 'hint'),
+      linkBtn(t('ui.footer.about'), 'about', 'ghost'),
       h('div', { class: 'actions' },
         linkBtn(c.backToList, 'passport', 'ghost'),
         linkBtn(next ? c.nextPart : c.finish, next ? 'passport/' + next : 'passport')));
@@ -751,6 +808,7 @@
     return page(t(u + 'title'),
       h('h2', {}, t(u + 'whatTitle')), p(t(u + 'what')),
       h('h2', {}, t(u + 'privacyTitle')), bullets(HTH.get('ui.about.privacy')),
+      card(storageSettings()),
       card(h('h2', {}, t(u + 'eraseTitle')), p(t(u + 'eraseText')), btn(t('ui.footer.erase'), eraseAll, 'danger')),
       langPicker() ? card(langPicker()) : null,
       h('h2', { id: 'sources' }, t(u + 'sourcesTitle')), p(t(u + 'sourcesNote'), 'hint'),
@@ -851,7 +909,7 @@
       m.lastClinicalReview ? null : h('p', { class: 'draft-banner' }, t('ui.draftBanner')),
       siteHeader(route[0]),
       h('main', { id: 'main', tabindex: '-1' }, h('div', { class: 'wrap' + (wide ? '' : ' reading') },
-        memoryOnly ? p(t('ui.memoryOnly'), 'callout warn') : null,
+        storageError ? p(t('ui.storage.unavailable'), 'callout warn') : null,
         crumbs(route, view), view)),
       siteFooter()
     ]);

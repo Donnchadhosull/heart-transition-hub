@@ -20,6 +20,6 @@ HTH.languages = [
   lastClinicalReview: use "YYYY-MM-DD", or null while the content is still a draft.
 */
 HTH.meta = {
-  version: "0.3.0",
+  version: "0.3.1",
   lastClinicalReview: null
 };

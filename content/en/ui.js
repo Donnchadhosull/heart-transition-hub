@@ -11,7 +11,15 @@ HTH.content.en.ui = {
   helpNow: "Need help now?",
   /* Shown at the top of every page until lastClinicalReview is set in content/languages.js. */
   draftBanner: "Pilot version. Content is awaiting clinical review.",
-  memoryOnly: "This browser is not saving what you type (it may be in private mode). Download your summary before you close this page.",
+  storage: {
+    temporary: "This visit is temporary. Download your summary before you close or reload this page.",
+    saving: "This browser saves what you type. Only use this on a device you trust and control.",
+    start: "Save on this device",
+    stop: "Stop saving and clear saved data",
+    restore: "Restore data saved earlier",
+    restoreConfirm: "Replace this visit's entries with your earlier saved data and keep saving on this device?",
+    unavailable: "This browser could not read or change saved data. Check your browser settings if you need to clear it."
+  },
   menu: "Menu",
   homeLabel: "Home",
 
@@ -26,7 +34,7 @@ HTH.content.en.ui = {
     proShare: "Share with patients (QR code)",
     toolsAll: "All tools"
   },
-  common: { next: "Next", back: "Back", remove: "Remove", saved: "What you type saves on this device as you go.", language: "Language", open: "Open" },
+  common: { next: "Next", back: "Back", remove: "Remove", language: "Language", open: "Open" },
 
   /* Patient information sections: title and one-line description, used in menus and cards. */
   sections: {
@@ -89,9 +97,9 @@ HTH.content.en.ui = {
     lead: "These are optional. Use them to get organized, then bring or send a summary to your team if you choose.",
     privacyTitle: "Your privacy",
     privacy: [
-      "What you type is stored only in the browser on this phone or computer.",
+      "Entries are temporary unless you choose to save them on this device.",
       "This site does not send it anywhere. You decide whether to download, share, or email a summary.",
-      "If other people use this device, they could open this site and see what you typed. \"Erase my data\" removes it for good."
+      "Use temporary mode on a shared device. Other people who use this browser profile may see saved entries."
     ]
   },
 
@@ -192,10 +200,10 @@ HTH.content.en.ui = {
     what: "Heart Transition Hub is a free, open website for young people with congenital heart disease who are moving from pediatric to adult heart care, their families, and their care teams. It gives general information and optional tools for getting organized. It is not medical advice, and nothing typed here is monitored.",
     privacyTitle: "Privacy",
     privacy: [
-      "Everything typed into the optional tools is stored only in the browser on that device.",
+      "The optional tools hold what you type for this visit. You can choose to save it in this browser.",
       "The website has no accounts, no tracking of answers, and no server that holds personal information.",
       "The website itself sends nothing. If you choose to share or email a summary, your own device's apps send it, to the people you choose.",
-      "Clearing your browser data, or using \"Erase my data\", deletes what you typed for good."
+      "\"Erase my data\" clears the entries stored by this site. Downloaded summaries are separate files."
     ],
     sourcesTitle: "Sources",
     sourcesNote: "The information here is based on these sources and written in plain language. Your own team's advice always comes first.",

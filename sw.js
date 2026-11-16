@@ -4,7 +4,7 @@
   what a patient types, and it never contacts any other site.
   Change CACHE when you publish a new version so old files are cleared.
 */
-var CACHE = 'hth-0.3.0';
+var CACHE = 'hth-0.3.1';
 var CORE = [
   './', 'index.html', 'css/styles.css',
   'js/core.js', 'js/pdf.js', 'js/export.js', 'js/app.js',
@@ -20,7 +20,7 @@ self.addEventListener('install', function (e) {
 
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
-    return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+    return Promise.all(keys.filter(function (k) { return k.indexOf('hth-') === 0 && k !== CACHE; }).map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 
@@ -28,16 +28,21 @@ self.addEventListener('activate', function (e) {
    Other languages are cached the first time they are loaded. */
 self.addEventListener('fetch', function (e) {
   var url = new URL(e.request.url);
-  if (e.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (e.request.method !== 'GET' || url.origin !== self.location.origin ||
+      url.href.indexOf(self.registration.scope) !== 0) return;
   e.respondWith(
     fetch(e.request).then(function (res) {
       if (res && res.ok) {
         var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
+        return caches.open(CACHE).then(function (c) { return c.put(e.request, copy); })
+          .catch(function () { /* continue with the network response */ })
+          .then(function () { return res; });
       }
       return res;
     }).catch(function () {
-      return caches.match(e.request, { ignoreSearch: true }).then(function (hit) { return hit || caches.match('index.html'); });
+      return caches.open(CACHE).then(function (c) {
+        return c.match(e.request, { ignoreSearch: true }).then(function (hit) { return hit || c.match('index.html'); });
+      });
     })
   );
 });
