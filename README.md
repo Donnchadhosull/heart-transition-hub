@@ -41,7 +41,8 @@ shows a "Pilot version" banner until a review date is set. See
 
 ## Privacy
 
-What a patient types is stored only in the browser on their own device. The site has no
+Entries stay in memory for the current visit unless a patient explicitly chooses **Save on
+this device**. The site has no
 server, no accounts and no analytics, and the page is blocked from making network requests
 (`connect-src 'none'` in `index.html`).
 
@@ -49,6 +50,10 @@ The site itself sends nothing. A patient can choose to download a PDF, share it 
 phone, or use "Email it as text", which opens their own email app with the summary already
 written so they can send it to themselves or their clinic. Regular email is less private
 than a patient portal, and the site says so next to the button.
+
+About and privacy also offers to restore earlier saved entries. They stay on the device
+until the visitor restores or erases them. Use a dedicated origin before clinical
+distribution to keep this browser storage separate from other GitHub Pages sites.
 
 ## Sharing it with patients
 
